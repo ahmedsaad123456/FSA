@@ -29,9 +29,9 @@ True
 False
 x
 6
-False
-False
-False
+True
+True
+True
 False
 x
 7
