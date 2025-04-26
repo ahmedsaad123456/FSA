@@ -3,7 +3,6 @@ package automata;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,6 +14,8 @@ public class NFA {
     private final char[] alphabet;
     private final Map<Integer, int[][]> transitionTable;
 
+    // ===============================================================================================================
+
     public NFA(int[] states, int[] startStates, int[] finalStates, char[] alphabet,
                Map<Integer, int[][]> transitionTable) {
         this.states = states;
@@ -24,23 +25,34 @@ public class NFA {
         this.transitionTable = transitionTable;
     }
 
+    // ===============================================================================================================
+
+    /**
+     * Checks if the input string is accepted by the NFA.
+     * @param input the input string to check
+     * @return true if the input is accepted, false otherwise
+     */
     public boolean isAccepted(String input) {
+        // check if the transition table is null
         if (transitionTable == null) {
             return false;
         }
 
+        // Initialize current states with start states
         Set<Integer> currentStates = new HashSet<>();
-        // Start with initial states and their epsilon closures
         for (int startState : startStates) {
             currentStates.add(startState);
         }
+
+        // Get epsilon closure of the start states
         currentStates = epsilonClosure(currentStates);
 
         for (char c : input.toCharArray()) {
-            // Check if character is in alphabet (excluding epsilon)
+            // Check if character is in alphabet
             boolean isValidChar = false;
+
             for (char a : alphabet) {
-                if (c == a && a != 'E') {  // 'E' is for epsilon transitions
+                if (c == a) {
                     isValidChar = true;
                     break;
                 }
@@ -66,8 +78,10 @@ public class NFA {
 
             // Process transitions for each current state
             for (int currentState : currentStates) {
+                // Get the transitions for the current state
                 int[][] transitions = transitionTable.get(currentState);
                 if (transitions != null && charIndex < transitions.length) {
+                    // Add all reachable states for the current character
                     for (int nextState : transitions[charIndex]) {
                         if (nextState != -1) {
                             nextStates.add(nextState);
@@ -96,32 +110,53 @@ public class NFA {
         return false;
     }
 
+    // ===============================================================================================================
+
+    /**
+     * Calculates the epsilon closure of a set of states.
+     * This is a helper method used in the NFA
+     * @param states the set of states to calculate the closure for
+     * @return the states with their epsilon closure
+     */
     private Set<Integer> epsilonClosure(Set<Integer> states) {
         Set<Integer> closure = new HashSet<>(states);
+
+        // Keep track of whether we have added new states to the closure
         boolean changed;
+
         do {
             changed = false;
+
             Set<Integer> newStates = new HashSet<>();
 
+            // For each state in the closure, check for epsilon transitions
             for (int state : closure) {
+                // Get the transitions for the current state
                 int[][] transitions = transitionTable.get(state);
+
+                // If there are transitions, check for epsilon transitions
                 if (transitions != null && transitions.length > 0) {
-                    // Check epsilon transitions (assuming 'E' is first in alphabet)
-                    if (alphabet.length > 0 && alphabet[0] == 'E') {
-                        for (int nextState : transitions[0]) {
-                            if (nextState != -1 && !closure.contains(nextState)) {
-                                newStates.add(nextState);
-                                changed = true;
-                            }
+
+                    // Epsilon transitions are at index 0
+                    for (int nextState : transitions[0]) {
+                        // Check if the next state is valid and not already in the closure
+                        if (nextState != -1 && !closure.contains(nextState)) {
+                            newStates.add(nextState);
+                            changed = true;
                         }
                     }
+
                 }
             }
+            // Add new states to the closure
             closure.addAll(newStates);
         } while (changed);
 
+        // Return the closure
         return closure;
     }
+
+    // ===============================================================================================================
 
     public void solveProblem(BufferedReader br, BufferedWriter bw) throws IOException {
         String line;
@@ -134,4 +169,6 @@ public class NFA {
         bw.write("x");
         bw.newLine();
     }
+
+    // ===============================================================================================================
 }

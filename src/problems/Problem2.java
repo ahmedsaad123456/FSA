@@ -12,12 +12,18 @@ import static java.util.Map.entry;
 
 public class Problem2
 {
-    int[] states;
-    int startState;
-    int[] finalState;
-    char[] alphabet;
-    public Map<Integer, int[]> transitionTable;
-    DFA dfa = new DFA(states,startState,finalState,alphabet,transitionTable);
+    int[] states = {0, 1, 2, 3 , 4};
+    int startState = 0;
+    int[] finalState = {3};
+    char[] alphabet = {'0', '1'};
+    public Map<Integer, int[]> transitionTable = Map.ofEntries(
+            entry(0, new int[]{4, 1}),
+            entry(1, new int[]{2, 2}),
+            entry(2, new int[]{3, 3}),
+            entry(3, new int[]{3, 3}),
+            entry(4, new int[]{4, 4})
+
+    ); DFA dfa = new DFA(states,startState,finalState,alphabet,transitionTable);
     public Problem2 (BufferedReader br, BufferedWriter bw) throws IOException {
         dfa.solveProblem(br,bw);
     }
