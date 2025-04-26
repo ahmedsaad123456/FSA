@@ -53,8 +53,8 @@ False
 False
 x
 10
-False
-False
-False
+True
+True
+True
 False
 x
