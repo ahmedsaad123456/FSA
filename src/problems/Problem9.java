@@ -12,7 +12,7 @@ import static java.util.Map.entry;
 public class Problem9 {
     int[] states = {0, 1, 2, 3};
     int[] startState = {0};
-    int[] finalState = {1, 2 , 3};
+    int[] finalState = {0, 1, 2 , 3};
     char[] alphabet = {'E', '0', '1'};
     public Map<Integer, int[][]> transitionTable = Map.ofEntries(
             entry(0, new int[][]{{-1}, {1}, {2}}),
